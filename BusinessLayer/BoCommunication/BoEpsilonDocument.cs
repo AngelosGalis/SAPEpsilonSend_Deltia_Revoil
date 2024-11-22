@@ -48,7 +48,7 @@ public class Invoiceheader
     public string fuelInvoice { get; set; }
     public string exchangeRate { get; set; }
     public EntityType otherCorrelatedEntities { get; set; }
-    public otherDeliveryNoteHeader OtherDeliveryNoteHeader { get; set; }
+    public otherDeliveryNoteHeader otherDeliveryNoteHeader { get; set; }
     public int ThirdPartyCollection { get; set; }
     public int IsDeliveryNote { get; set; }
     public string vehicleNumber { get; set; }

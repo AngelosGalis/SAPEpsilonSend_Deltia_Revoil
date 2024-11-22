@@ -397,20 +397,23 @@ namespace SAPEpsilonSend.BusinessLayer
                             oDocument.isDelivery = Boolean.Parse(oRS.Fields.Item("isDeliveryNote").Value.ToString());
                             if (oDocument.isDelivery == true)
                             {
-                                oDocument.EpsilonDocument.invoiceHeader.IsDeliveryNote = 1;
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader = new otherDeliveryNoteHeader();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.completeShippingBranch = int.Parse(oRS.Fields.Item("completeShippingBranch").Value.ToString());
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.startShippingBranch = int.Parse(oRS.Fields.Item("startShippingBranch").Value.ToString());
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress = new Address();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress.city = oRS.Fields.Item("deliveryCity").Value.ToString();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress.street = oRS.Fields.Item("deliveryStreet").Value.ToString();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress.number = oRS.Fields.Item("deliveryStreetNr").Value.ToString();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress.postalCode = oRS.Fields.Item("deliveryZip").Value.ToString();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress = new Address();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress.city = oRS.Fields.Item("loadingCity").Value.ToString();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress.street = oRS.Fields.Item("loadingStreet").Value.ToString();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress.number = oRS.Fields.Item("loadingNumber").Value.ToString();
-                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress.postalCode = oRS.Fields.Item("loadingPostalCode").Value.ToString();
+                                if (!oDocument.EpsilonDocument.invoiceHeader.invoiceType.Equals("9.3"))
+                                {
+                                    oDocument.EpsilonDocument.invoiceHeader.IsDeliveryNote = 1;
+                                }
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader = new otherDeliveryNoteHeader();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.completeShippingBranch = int.Parse(oRS.Fields.Item("completeShippingBranch").Value.ToString());
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.startShippingBranch = int.Parse(oRS.Fields.Item("startShippingBranch").Value.ToString());
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.deliveryAddress = new Address();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.deliveryAddress.city = oRS.Fields.Item("deliveryCity").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.deliveryAddress.street = oRS.Fields.Item("deliveryStreet").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.deliveryAddress.number = oRS.Fields.Item("deliveryStreetNr").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.deliveryAddress.postalCode = oRS.Fields.Item("deliveryZip").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.loadingAddress = new Address();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.loadingAddress.city = oRS.Fields.Item("loadingCity").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.loadingAddress.street = oRS.Fields.Item("loadingStreet").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.loadingAddress.number = oRS.Fields.Item("loadingNumber").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.otherDeliveryNoteHeader.loadingAddress.postalCode = oRS.Fields.Item("loadingPostalCode").Value.ToString();
 
                                 oDocument.EpsilonDocument.otherTransportDetails = new List<TransportDetailType>();
                                 TransportDetailType transportDetailType = new TransportDetailType();
