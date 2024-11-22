@@ -18,7 +18,7 @@ public class BoEpsilonDocumentWrapper
         int iRetVal = 0;
         try
         {
-            CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+            CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
             //this.externalSystemId = _oDocument.invoiceHeader.aa;
             this.externalSystemId = _sObjectCode + "_" + _oDocument.invoiceHeader.aa;

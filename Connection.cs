@@ -32,7 +32,7 @@ namespace SAPEpsilonSend
             int iRetVal = 0;
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 oCompany = new SAPbobsCOM.Company();
                 //oCompany.Server = "10.0.1.105:30015";

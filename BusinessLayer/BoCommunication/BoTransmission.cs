@@ -99,7 +99,7 @@ namespace SAPEpsilonSend.BusinessLayer
             int iRetVal = 0;
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 string sEndPoint = ini.IniReadValue("Default", "EndPointRefreshToken");
 
@@ -143,10 +143,8 @@ namespace SAPEpsilonSend.BusinessLayer
             {
                 //string sEndPoint = ConfigurationManager.AppSettings["EndPointPostDocuments"];
                 string sEndPoint = this.Auth.url1;
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
                 sEndPoint += ini.IniReadValue("Default", "EndPointIssueDocument").Replace("qqq", "");
-
-                //https://beta-epsilondigital.epsilonnet.gr/api/invoices/issu
 
                 object q = _oWrapper;
 
@@ -165,7 +163,6 @@ namespace SAPEpsilonSend.BusinessLayer
                 BoDAL.UpdateTransactionSETSendJSON(_sTranCode, sJSONBody, Connection.oCompany);
 
 
-                #region TEST 20231026
                 IRestResponse oResponse = this.Client.Execute(this.Request);
 
                 if (oResponse.StatusCode == HttpStatusCode.OK)
@@ -191,7 +188,6 @@ namespace SAPEpsilonSend.BusinessLayer
                 Logging.WriteToLog("BoTransmission.LogXML", Logging.LogStatus.START);
                 this.LogXML(XMLFile.xmlIssue, oResponse.Content);
                 Logging.WriteToLog("BoTransmission.LogXML", Logging.LogStatus.END);
-                #endregion
             }
             catch (Exception ex)
             {
@@ -278,7 +274,7 @@ namespace SAPEpsilonSend.BusinessLayer
             int iRetVal = 0;
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
                 string sEndPoint = ini.IniReadValue("Default", "EndPointLogin");
 
                 BoEpsilonLogin oLogin = new BoEpsilonLogin();
@@ -330,7 +326,7 @@ namespace SAPEpsilonSend.BusinessLayer
             int iRetVal = 0;
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 string sSuffix = "";
                 string sPath = "";

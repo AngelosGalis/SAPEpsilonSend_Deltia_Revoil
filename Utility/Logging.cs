@@ -84,7 +84,7 @@ namespace CommonLibrary.ExceptionHandling
         /// <param name="_oStatus">Τύπος πληροφορίας</param>
         public static void WriteToLog(string _sText, LogStatus _oStatus)
         {
-            CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+            CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
             
             int iLogger = int.Parse(ini.IniReadValue("Default", "LOGGER"));
 
@@ -104,7 +104,7 @@ namespace CommonLibrary.ExceptionHandling
         public static void ManageLogFile()
         {
             string sErrorLogFile = "ErrorLog.txt";
-            string sFileLocation = "C:\\Program Files\\sap\\HANAServiceLogs\\Logs\\Post";
+            string sFileLocation = "C:\\Program Files\\sap\\HANAServiceLogsDA\\Logs\\Post";
 
             FileInfo oFInfo = new FileInfo(string.Format("{0}\\{1}", sFileLocation, sErrorLogFile));
 
@@ -174,7 +174,7 @@ namespace CommonLibrary.ExceptionHandling
         {
             string sErrorLogFile = "ErrorLog.txt";
             //string sFileLocation = AppDomain.CurrentDomain.BaseDirectory + "";
-            string sFileLocation = "C:\\Program Files\\sap\\HANAServiceLogs\\Logs\\Post";
+            string sFileLocation = "C:\\Program Files\\sap\\HANAServiceLogsDA\\Logs\\Post";
 
             //string sUser = Globals.Company.UserName;
 

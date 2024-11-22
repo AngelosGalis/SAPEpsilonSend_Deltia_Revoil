@@ -21,7 +21,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -61,7 +61,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -131,7 +131,7 @@ namespace SAPEpsilonSend.BusinessLayer
                 {
                     tranPK = _oDocument.TRANCodePK;
                 }
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -190,7 +190,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -216,7 +216,7 @@ namespace SAPEpsilonSend.BusinessLayer
             _sTranCode = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
                     sSQL = "SELECT \"F_ELIV_GET_TRANSACTION_CALL_CODE\"(" +
@@ -264,7 +264,7 @@ namespace SAPEpsilonSend.BusinessLayer
             _sAPICallID = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -309,7 +309,7 @@ namespace SAPEpsilonSend.BusinessLayer
             _sAPICallID = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -375,7 +375,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
                 string json = _sJSON.Substring(0, Math.Min(_sJSON.Length, 3999));
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -419,7 +419,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -473,7 +473,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -524,7 +524,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -571,7 +571,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -611,7 +611,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
                 string DBVersion = ini.IniReadValue("Default", "DatabaseVersion");
                 if (DBVersion.Equals("HANA"))
                 {
@@ -652,7 +652,7 @@ namespace SAPEpsilonSend.BusinessLayer
             string sSQL = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {
@@ -700,7 +700,7 @@ namespace SAPEpsilonSend.BusinessLayer
             _sDocumentPK = "";
             try
             {
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                 if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                 {

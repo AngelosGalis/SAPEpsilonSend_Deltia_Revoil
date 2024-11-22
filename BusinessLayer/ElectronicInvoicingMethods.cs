@@ -125,7 +125,10 @@ namespace SAPEpsilonSend.BusinessLayer
                     Invoicesummary oEpsilonInvoiceSummary = null;
                     List<taxesTotals> oEpsilonInvoiceTaxesTotals = null;
 
-                    CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                    CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
+                    string sDelivery = ini.IniReadValue("Default", "DELIVERY_TYPES");
+                    List<string> ListsDelivery = new List<string>();
+                    ListsDelivery = sDelivery.Split(',').ToList();
 
                     SAPbobsCOM.Recordset oRS = CommonLibrary.Functions.Database.GetRecordSet(_sSQLBasic, Connection.oCompany);
 
@@ -176,6 +179,20 @@ namespace SAPEpsilonSend.BusinessLayer
                             oEpsilonDetail.stampPercentage = oRS.Fields.Item("stampDutyPercentage").Value.ToString().Replace(",", ".");
                             oEpsilonDetail.stampPercentCategory = oRS.Fields.Item("stampDutyPercentCategory").Value.ToString(); // oRS.Fields.Item("withheldPercentCategory").Value.ToString();
 
+                            #region Delivery Notes
+                            oEpsilonDetail.ItemCode = oRS.Fields.Item("ItemCode").Value.ToString();
+                            oEpsilonDetail.TaricNo = oRS.Fields.Item("TaricNo").Value.ToString();
+                            string recType = oRS.Fields.Item("recType").Value.ToString();
+                            if (!string.IsNullOrEmpty(recType))
+                            {
+                                oEpsilonDetail.recType = int.Parse(recType);
+                            }
+                            if (!oDocument.ObjectCode.Equals("13") && !oDocument.ObjectCode.Equals("14"))
+                            {
+                                oEpsilonDetail.netValue = "0";
+                                oEpsilonDetail.vatAmount = "0";
+                            }
+                            #endregion
 
                             oResult.EpsilonDocument.invoiceDetails.Add(oEpsilonDetail);
 
@@ -211,7 +228,6 @@ namespace SAPEpsilonSend.BusinessLayer
                             oDocument.EpsilonDocument.invoiceHeader = new Invoiceheader();
                             oDocument.EpsilonDocument.invoiceSummary = new Invoicesummary();
                             oDocument.EpsilonDocument.issuer = new Issuer();
-                            oDocument.EpsilonDocument.paymentMethods = new List<Paymentmethod>();
 
                             oDocument.EpsilonDocument.invoiceHeader.fuelInvoice = oRS.Fields.Item("fuelInvoice").Value.ToString();
                             oDocument.EpsilonDocument.invoiceHeader.exchangeRate = oRS.Fields.Item("exchangeRate").Value.ToString();
@@ -219,8 +235,11 @@ namespace SAPEpsilonSend.BusinessLayer
                             oDocument.EpsilonDocument.invoiceHeader.aa = sDocNum;
                             //oDocument.EpsilonDocument.invoiceHeader.correlatedInvoices = "";
                             //oDocument.EpsilonDocument.invoiceHeader.currency = oRS.Fields.Item("currency").Value.ToString();
-                            oDocument.EpsilonDocument.invoiceHeader.currency = oRS.Fields.Item("DocCur").Value.ToString();
                             oDocument.EpsilonDocument.invoiceHeader.invoiceType = oRS.Fields.Item("invoiceType").Value.ToString();   //αν είναι ΤΠ / ΤΔΑ (να γίνει mapping) θα δίνω το seriescode
+                            if (!ListsDelivery.Contains(oDocument.EpsilonDocument.invoiceHeader.invoiceType))
+                            {
+                                oDocument.EpsilonDocument.invoiceHeader.currency = oRS.Fields.Item("DocCur").Value.ToString();
+                            }
                             oDocument.EpsilonDocument.invoiceHeader.invoiceTypeDescription = oRS.Fields.Item("invoiceTypeDescription").Value.ToString();
                             //2021-11-15T10:33:41Z
                             //2021-11-25
@@ -267,6 +286,9 @@ namespace SAPEpsilonSend.BusinessLayer
                             oDocument.EpsilonDocument.counterpart.street = oRS.Fields.Item("street_2").Value.ToString();
                             oDocument.EpsilonDocument.counterpart.streetNumber = oRS.Fields.Item("streetNumber_2").Value.ToString();
                             oDocument.EpsilonDocument.counterpart.vatNumber = oRS.Fields.Item("BPvatNumber").Value.ToString();
+                            oDocument.EpsilonDocument.counterpart.branch = int.Parse(oRS.Fields.Item("counterPartBranch").Value.ToString());
+                            oDocument.EpsilonDocument.counterpart.distinctiveTitle = oRS.Fields.Item("counterpartDistinctiveTitle").Value.ToString();
+
 
                             oDocument.EpsilonDocument.invoiceHeader.formValues.deliveryAfm = oRS.Fields.Item("deliveryAfm").Value.ToString();
                             oDocument.EpsilonDocument.invoiceHeader.formValues.deliveryApostoli = oRS.Fields.Item("deliveryApostoli").Value.ToString();
@@ -296,15 +318,21 @@ namespace SAPEpsilonSend.BusinessLayer
                             oDocument.EpsilonDocument.issuer.street = oRS.Fields.Item("street_1").Value.ToString();
                             oDocument.EpsilonDocument.issuer.vatNumber = oRS.Fields.Item("CompanyvatNumber").Value.ToString();
                             oDocument.EpsilonDocument.issuer.streetNumber = oRS.Fields.Item("streetNumber_1").Value.ToString();
+                            oDocument.EpsilonDocument.issuer.branch = int.Parse(oRS.Fields.Item("issuerBranch").Value.ToString());
+                            oDocument.EpsilonDocument.issuer.Name = oRS.Fields.Item("issuerName").Value.ToString();
 
-                            oEpsilonPaymentMethod = new Paymentmethod();
-                            oEpsilonPaymentMethod.amount = oRS.Fields.Item("DocTotal").Value.ToString().Replace(",", "."); //TODO total value -> doctotal (για παρακρατούμενους αρχικά) 20240723
-                            oEpsilonPaymentMethod.type = oRS.Fields.Item("PaymentMethodType").Value.ToString();   //mapping με τους κωδ. τις ααδε
 
-                            oDocument.EpsilonDocument.paymentMethods.Add(oEpsilonPaymentMethod);
+                            if (!ListsDelivery.Contains(oDocument.EpsilonDocument.invoiceHeader.invoiceType))
+                            {
+                                oDocument.EpsilonDocument.paymentMethods = new List<Paymentmethod>();
+                                oEpsilonPaymentMethod = new Paymentmethod();
+                                oEpsilonPaymentMethod.amount = oRS.Fields.Item("DocTotal").Value.ToString().Replace(",", "."); //TODO total value -> doctotal (για παρακρατούμενους αρχικά) 20240723
+                                oEpsilonPaymentMethod.type = oRS.Fields.Item("PaymentMethodType").Value.ToString();   //mapping με τους κωδ. τις ααδε
+                                oDocument.EpsilonDocument.paymentMethods.Add(oEpsilonPaymentMethod);
+                            }
 
                             //Logging.WriteToLog("ElectronicInvoicingMethods.LoadClass.GetSummaries", Logging.LogStatus.START);
-                            int iResultSummary = this.GetSummaries(oDocument.ObjectCode, oDocument.DocNum, out oEpsilonInvoiceSummary);
+                            int iResultSummary = this.GetSummaries(oDocument.ObjectCode, oDocument.DocNum,oDocument.EpsilonDocument.invoiceHeader.invoiceType ,out oEpsilonInvoiceSummary);
 
 
                             int iResultTaxesTotals = this.GetTaxes(oDocument.ObjectCode, oDocument.DocEntry, out oEpsilonInvoiceTaxesTotals);
@@ -364,6 +392,68 @@ namespace SAPEpsilonSend.BusinessLayer
                             oEpsilonDetail.stampPercentCategory = oRS.Fields.Item("stampDutyPercentCategory").Value.ToString(); // oRS.Fields.Item("withheldPercentCategory").Value.ToString();
 
 
+
+                            #region Delivery Notes
+                            oDocument.isDelivery = Boolean.Parse(oRS.Fields.Item("isDeliveryNote").Value.ToString());
+                            if (oDocument.isDelivery == true)
+                            {
+                                oDocument.EpsilonDocument.invoiceHeader.IsDeliveryNote = 1;
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader = new otherDeliveryNoteHeader();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.completeShippingBranch = int.Parse(oRS.Fields.Item("completeShippingBranch").Value.ToString());
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.startShippingBranch = int.Parse(oRS.Fields.Item("startShippingBranch").Value.ToString());
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress = new Address();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress.city = oRS.Fields.Item("deliveryCity").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress.street = oRS.Fields.Item("deliveryStreet").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress.number = oRS.Fields.Item("deliveryStreetNr").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.deliveryAddress.postalCode = oRS.Fields.Item("deliveryZip").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress = new Address();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress.city = oRS.Fields.Item("loadingCity").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress.street = oRS.Fields.Item("loadingStreet").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress.number = oRS.Fields.Item("loadingNumber").Value.ToString();
+                                oDocument.EpsilonDocument.invoiceHeader.OtherDeliveryNoteHeader.loadingAddress.postalCode = oRS.Fields.Item("loadingPostalCode").Value.ToString();
+
+                                oDocument.EpsilonDocument.otherTransportDetails = new List<TransportDetailType>();
+                                TransportDetailType transportDetailType = new TransportDetailType();
+                                transportDetailType.vehicleNumber = oRS.Fields.Item("vehicleNumber").Value.ToString();
+                                oDocument.EpsilonDocument.otherTransportDetails.Add(transportDetailType);
+                                oDocument.EpsilonDocument.invoiceHeader.vehicleNumber = oRS.Fields.Item("vehicleNumber").Value.ToString();
+
+                                string deliveryAFM = oRS.Fields.Item("deliveryAfm").Value.ToString();
+                                if (!oDocument.EpsilonDocument.counterpart.vatNumber.Equals(deliveryAFM) && !deliveryAFM.Equals("000000000")) //SOS προσοχή σε περιπτώσεις αυτοπαράδοσης με deliveryAFM = 000000000
+                                {
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities = new EntityType();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.type = int.Parse(oRS.Fields.Item("entityTypeCode").Value.ToString());
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData = new EntityData();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.vatNumber = oRS.Fields.Item("deliveryVatNumber").Value.ToString();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.name = oRS.Fields.Item("deliveryName").Value.ToString();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.country = oRS.Fields.Item("deliveryCountry").Value.ToString();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.branch = int.Parse(oRS.Fields.Item("deliveryBranch").Value.ToString());
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.address = new Address();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.address.city = oRS.Fields.Item("deliveryCity").Value.ToString();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.address.street = oRS.Fields.Item("deliveryStreet").Value.ToString();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.address.number = oRS.Fields.Item("deliveryStreetNr").Value.ToString();
+                                    oDocument.EpsilonDocument.invoiceHeader.otherCorrelatedEntities.entityData.address.postalCode = oRS.Fields.Item("deliveryZip").Value.ToString();
+
+                                }
+
+                                oEpsilonDetail.ItemCode = oRS.Fields.Item("ItemCode").Value.ToString();
+                                oEpsilonDetail.TaricNo = oRS.Fields.Item("TaricNo").Value.ToString();
+                                string recType = oRS.Fields.Item("recType").Value.ToString();
+                                if (!string.IsNullOrEmpty(recType))
+                                {
+                                    oEpsilonDetail.recType = int.Parse(recType);
+                                }
+                                if (!oDocument.ObjectCode.Equals("13") && !oDocument.ObjectCode.Equals("14"))
+                                {
+                                    oEpsilonDetail.netValue = "0";
+                                    oEpsilonDetail.vatAmount = "0";
+                                }
+
+                            }
+
+                            #endregion
+
+
                             oDocument.EpsilonDocument.invoiceDetails.Add(oEpsilonDetail);
                             oDocument.EpsilonDocument.taxesTotals = oEpsilonInvoiceTaxesTotals;
                             oDocument.EpsilonDocument.invoiceSummary = oEpsilonInvoiceSummary;
@@ -384,7 +474,7 @@ namespace SAPEpsilonSend.BusinessLayer
                 return iRetVal;
             }
 
-            private int GetSummaries(string _sObjectCode, string _sDocNum, out Invoicesummary oSummary)
+            private int GetSummaries(string _sObjectCode, string _sDocNum, string invoiceType, out Invoicesummary oSummary)
             {
                 oSummary = new Invoicesummary();
                 int iRetVal = 0;
@@ -392,6 +482,17 @@ namespace SAPEpsilonSend.BusinessLayer
                 string sSQLClass = "";
                 try
                 {
+                    CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
+
+                    string sNoClassRecType = ini.IniReadValue("Default", "NO_CLASSIFICATION_RECTYPE");
+                    List<string> ListNoClassRecType = new List<string>();
+                    ListNoClassRecType = sNoClassRecType.Split(',').ToList();
+
+                    string sNoClassDelivery = ini.IniReadValue("Default", "NO_CLASSIFICATION_DELIVERY");
+                    List<string> ListNoClassDelivery = new List<string>();
+                    ListNoClassDelivery = sNoClassDelivery.Split(',').ToList();
+
+
                     Incomeclassification oClassification = null;
 
                     if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
@@ -425,48 +526,50 @@ namespace SAPEpsilonSend.BusinessLayer
                     oSummary.totalValue = oRSTotals.Fields.Item("GTOTValue").Value.ToString().Replace(",", ".");
                     oSummary.totalVatAmount = oRSTotals.Fields.Item("GTOTVATValue").Value.ToString().Replace(",", ".");
 
-                    if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
+                    if (ListNoClassRecType.Contains(invoiceType) == false && ListNoClassDelivery.Contains(invoiceType) == false)
                     {
-                        sSQLClass = "SELECT " + Environment.NewLine +
-                            " \"DocNum\"," + Environment.NewLine +
-                            " \"ClassificationCategory\"," + Environment.NewLine +
-                            " \"IncomeClassification\"," + Environment.NewLine +
-                            " \"GTOTNetValue\"," + Environment.NewLine +
-                            " \"GTOTValue\"," + Environment.NewLine +
-                            " \"GTOTVATValue\"" + Environment.NewLine +
-                            " FROM ZTKA_V_ELECTRONIC_INVOICES_SALES_INVOICES_CLASSIFICATION_TOTALS" + Environment.NewLine +
-                            " WHERE 1 = 1" + Environment.NewLine +
-                            " AND \"ObjType\" = N'" + _sObjectCode + "'" + Environment.NewLine +
-                            " AND \"DocNum\" = N'" + _sDocNum + "'";
+                        if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
+                        {
+                            sSQLClass = "SELECT " + Environment.NewLine +
+                                " \"DocNum\"," + Environment.NewLine +
+                                " \"ClassificationCategory\"," + Environment.NewLine +
+                                " \"IncomeClassification\"," + Environment.NewLine +
+                                " \"GTOTNetValue\"," + Environment.NewLine +
+                                " \"GTOTValue\"," + Environment.NewLine +
+                                " \"GTOTVATValue\"" + Environment.NewLine +
+                                " FROM ZTKA_V_ELECTRONIC_INVOICES_SALES_INVOICES_CLASSIFICATION_TOTALS" + Environment.NewLine +
+                                " WHERE 1 = 1" + Environment.NewLine +
+                                " AND \"ObjType\" = N'" + _sObjectCode + "'" + Environment.NewLine +
+                                " AND \"DocNum\" = N'" + _sDocNum + "'";
+                        }
+                        else
+                        {
+                            sSQLClass = "SELECT " + Environment.NewLine +
+                                " DocNum," + Environment.NewLine +
+                                " ClassificationCategory," + Environment.NewLine +
+                                " IncomeClassification," + Environment.NewLine +
+                                " GTOTNetValue," + Environment.NewLine +
+                                " GTOTValue," + Environment.NewLine +
+                                " GTOTVATValue" + Environment.NewLine +
+                                " FROM TKA_V_ELECTRONIC_INVOICES_SALES_INVOICES_CLASSIFICATION_TOTALS" + Environment.NewLine +
+                                " WHERE 1 = 1" + Environment.NewLine +
+                                " AND ObjType = N'" + _sObjectCode + "'" + Environment.NewLine +
+                                " AND DocNum = N'" + _sDocNum + "'";
+                        }
+
+                        SAPbobsCOM.Recordset oRSClass = CommonLibrary.Functions.Database.GetRecordSet(sSQLClass, Connection.oCompany);
+
+                        while (oRSClass.EoF == false)
+                        {
+                            oClassification = new Incomeclassification(); //θα πρέπει να τρέχει ομαδοποίηση βάσει classificationCategory
+                            oClassification.amount = oRSClass.Fields.Item("GTOTNetValue").Value.ToString().Replace(",", ".");
+                            oClassification.classificationCategory = oRSClass.Fields.Item("IncomeClassification").Value.ToString(); //πίνακας αντιστοίχησης από ααδε
+                            oClassification.classificationType = oRSClass.Fields.Item("ClassificationCategory").Value.ToString(); //πίνακας αντιστοίχησης από ααδε
+
+                            oRSClass.MoveNext();
+                            oSummary.incomeClassifications.Add(oClassification);
+                        }
                     }
-                    else
-                    {
-                        sSQLClass = "SELECT " + Environment.NewLine +
-                            " DocNum," + Environment.NewLine +
-                            " ClassificationCategory," + Environment.NewLine +
-                            " IncomeClassification," + Environment.NewLine +
-                            " GTOTNetValue," + Environment.NewLine +
-                            " GTOTValue," + Environment.NewLine +
-                            " GTOTVATValue" + Environment.NewLine +
-                            " FROM TKA_V_ELECTRONIC_INVOICES_SALES_INVOICES_CLASSIFICATION_TOTALS" + Environment.NewLine +
-                            " WHERE 1 = 1" + Environment.NewLine +
-                            " AND ObjType = N'" + _sObjectCode + "'" + Environment.NewLine +
-                            " AND DocNum = N'" + _sDocNum + "'";
-                    }
-
-                    SAPbobsCOM.Recordset oRSClass = CommonLibrary.Functions.Database.GetRecordSet(sSQLClass, Connection.oCompany);
-
-                    while (oRSClass.EoF == false)
-                    {
-                        oClassification = new Incomeclassification(); //θα πρέπει να τρέχει ομαδοποίηση βάσει classificationCategory
-                        oClassification.amount = oRSClass.Fields.Item("GTOTNetValue").Value.ToString().Replace(",", ".");
-                        oClassification.classificationCategory = oRSClass.Fields.Item("IncomeClassification").Value.ToString(); //πίνακας αντιστοίχησης από ααδε
-                        oClassification.classificationType = oRSClass.Fields.Item("ClassificationCategory").Value.ToString(); //πίνακας αντιστοίχησης από ααδε
-
-                        oRSClass.MoveNext();
-                        oSummary.incomeClassifications.Add(oClassification);
-                    }
-
                     //SAPbobsCOM.Recordset oRS = CommonLibrary.Functions.Database.GetRecordSet(_sSQL, Connection.oCompany);
 
                     //while (oRS.EoF == false)
@@ -633,9 +736,8 @@ namespace SAPEpsilonSend.BusinessLayer
                             //sRetVal = "SELECT top 10 * FROM TKA_V_ELECTRONIC_INVOICES_SALES_INVOICES WHERE 1=1 order by issueDate desc";
                             if (Connection.oCompany.DbServerType == SAPbobsCOM.BoDataServerTypes.dst_HANADB)
                             {
-                                  sRetVal = "select * from TKA_V_ELECTRONIC_INVOICES_SALES_INVOICES where 1 = 1" + Environment.NewLine +
-                                        "and \"mKey\" in (select top 10 distinct \"mKey\" from TKA_V_ELECTRONIC_INVOICES_SALES_INVOICES)";
-
+                                 sRetVal = "select * from TKA_V_ELECTRONIC_INVOICES_SALES_INVOICES where 1 = 1" + Environment.NewLine +
+                                       "and \"mKey\" in (select top 10 distinct \"mKey\" from TKA_V_ELECTRONIC_INVOICES_SALES_INVOICES)";
                             }
                             else
                             {
@@ -673,7 +775,7 @@ namespace SAPEpsilonSend.BusinessLayer
                 return sRetVal;
             }
 
-           
+
             #endregion
 
             #region Public Methods
@@ -750,11 +852,11 @@ namespace SAPEpsilonSend.BusinessLayer
                         oDocument = new BoDocument();
                         oDocument = this.ListDocuments[i];
 
-                        int iAlreadyProccessed = BoDAL.ProccessedDocumentExist(oDocument.ObjectCode, oDocument.DocNum,Connection.oCompany);
+                        int iAlreadyProccessed = BoDAL.ProccessedDocumentExist(oDocument.ObjectCode, oDocument.DocNum, Connection.oCompany);
                         int iLogged = 0;
                         if (iAlreadyProccessed == 0)
                         {
-                            iLogged = BoDAL.AddProccessedDocument(Connection.oCompany,oDocument.ObjectCode, oDocument.DocNum, oDocument.DocEntry, "0", "0", "", "");
+                            iLogged = BoDAL.AddProccessedDocument(Connection.oCompany, oDocument.ObjectCode, oDocument.DocNum, oDocument.DocEntry, "0", "0", "", "");
                         }
                         else
                         {
@@ -836,8 +938,8 @@ namespace SAPEpsilonSend.BusinessLayer
 
                     string sJSON = new JavaScriptSerializer().Serialize(_oDocument.EpsilonDocument);
 
-                    
-                    string sPath = "C:\\Program Files\\sap\\HANAServiceLogs\\XML\\XMLIssue\\TEST" + _oDocument.ObjectCode + "_" + _oDocument.DocEntry + ".json";
+
+                    string sPath = "C:\\Program Files\\sap\\HANAServiceLogsDA\\XML\\XMLIssue\\" + _oDocument.ObjectCode + "_" + _oDocument.DocEntry + ".json";
 
                     using (StreamWriter sw = File.CreateText(sPath))
                     {
@@ -853,7 +955,7 @@ namespace SAPEpsilonSend.BusinessLayer
 
                     sJSON = new JavaScriptSerializer().Serialize(oReply);
                     _oDocument.JSONResponse = sJSON;
-                    sPath = "C:\\Program Files\\sap\\HANAServiceLogs\\XML\\XMLIssue\\RESPONSE\\" + _oDocument.ObjectCode + "_" + _oDocument.DocEntry + ".json";
+                    sPath = "C:\\Program Files\\sap\\HANAServiceLogsDA\\XML\\XMLIssue\\RESPONSE\\" + _oDocument.ObjectCode + "_" + _oDocument.DocEntry + ".json";
                     using (StreamWriter sw = File.CreateText(sPath))
                     {
                         sw.WriteLine(sJSON);
@@ -863,7 +965,7 @@ namespace SAPEpsilonSend.BusinessLayer
                     {
                         BoDAL.UpdateTransactionResult(_oDocument.DocumentID, _oDocument.TRANCodePK, "1", _oDocument.JSONResponse, oReply.documentId, Connection.oCompany);
                         Console.WriteLine("Επιτυχής Αποστολή του Εγγράφου, Τύπου: " + _oDocument.ObjectCode + " με Κωδικό: " + _oDocument.DocNum + "");
-                        BoDAL.UpdateEpsilonDocumentCode(_oDocument.DocumentID, oReply.documentId, oReply.qrCode,Connection.oCompany);
+                        BoDAL.UpdateEpsilonDocumentCode(_oDocument.DocumentID, oReply.documentId, oReply.qrCode, Connection.oCompany);
                         iRetVal++;
                     }
                     else //Failure
@@ -942,13 +1044,13 @@ namespace SAPEpsilonSend.BusinessLayer
                     switch (_enType)
                     {
                         case LogTypes.lg_APICall:
-                            BoDAL.LogNewCall(this.UserSign,Connection.oCompany);
+                            BoDAL.LogNewCall(this.UserSign, Connection.oCompany);
                             break;
                         case LogTypes.lg_TranAdd:
                             BoDAL.LogNewTransaction(this.APPICallID, _oDocument, Connection.oCompany);
                             break;
                         case LogTypes.lg_TranUpdate:
-                            BoDAL.LogUpdateTransaction( Connection.oCompany);
+                            BoDAL.LogUpdateTransaction(Connection.oCompany);
                             break;
                         case LogTypes.lg_LoadAPICall:
                             string sAPICallID = "";
@@ -979,7 +1081,7 @@ namespace SAPEpsilonSend.BusinessLayer
                 int iRetVal = 0;
                 try
                 {
-                    CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                    CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
 
                     int iResult = 0;
                     int iSuccess = 4;

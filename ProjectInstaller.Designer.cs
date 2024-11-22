@@ -39,9 +39,9 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.Description = "SAPEpsilonSend_HANA Dscr";
-            this.serviceInstaller1.DisplayName = "SAPEpsilonSend_HANA";
-            this.serviceInstaller1.ServiceName = "SAPEpsilonSendHANAService";
+            this.serviceInstaller1.Description = "SAPEpsilonSend_HANA_DA Dscr";
+            this.serviceInstaller1.DisplayName = "SAPEpsilonSend_HANA_DA";
+            this.serviceInstaller1.ServiceName = "SAPEpsilonSendHANADAService";
             // 
             // ProjectInstaller
             // 

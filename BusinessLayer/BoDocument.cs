@@ -19,6 +19,8 @@ namespace SAPEpsilonSend.BusinessLayer
         public string TRANCodePK { get; set; }
         public string ObjectCode { get; set; }
         public string DocEntry { get; set; }
+        public bool isDelivery { get; set; }
+
         public EligibleSAPObjects DocumentType { get; set; }
         public BoEpsilonDocument EpsilonDocument { get; set; }
         public BoEpsilonDocumentWrapper EpsilonDocumentWrapper { get; set; }

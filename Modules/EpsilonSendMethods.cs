@@ -141,7 +141,7 @@ namespace SAPEpsilonSend.Modules
             {
                 List<string> ListRecepients = new List<string>();
 
-                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogs\\ConfParams.ini");
+                CommonLibrary.Ini.IniFile ini = new CommonLibrary.Ini.IniFile("C:\\Program Files\\sap\\HANAServiceLogsDA\\ConfParams.ini");
                 BoMail oMail = new BoMail();
 
                 string sRecepients = ini.IniReadValue("Default", "MailReceiver");

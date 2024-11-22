@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SAPEpsilonSend_HANA")]
+[assembly: AssemblyTitle("SAPEpsilonSend_HANA_DA")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TEKA Systems SA")]
-[assembly: AssemblyProduct("SAPEpsilonSend_HANA")]
+[assembly: AssemblyProduct("SAPEpsilonSend_HANA_DA")]
 [assembly: AssemblyCopyright("Copyright © TEKA Systems SA 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
